@@ -20,6 +20,7 @@ namespace MGMMVCAPP.Controllers
 
         public IActionResult Privacy()
         {
+
             return View();
         }
 

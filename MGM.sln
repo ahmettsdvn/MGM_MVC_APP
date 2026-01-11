@@ -5,6 +5,10 @@ VisualStudioVersion = 17.14.36221.1 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MGMMVCAPP", "MGMMVCAPP\MGMMVCAPP.csproj", "{853EE2DA-371E-4BDB-88C8-B46F96B9EC72}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{CAB80291-809C-4551-911D-093AAF4B24DA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services", "Services\Services.csproj", "{0A685888-6DE8-44D3-A48E-9AE3A2879074}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{853EE2DA-371E-4BDB-88C8-B46F96B9EC72}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{853EE2DA-371E-4BDB-88C8-B46F96B9EC72}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{853EE2DA-371E-4BDB-88C8-B46F96B9EC72}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CAB80291-809C-4551-911D-093AAF4B24DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CAB80291-809C-4551-911D-093AAF4B24DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CAB80291-809C-4551-911D-093AAF4B24DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CAB80291-809C-4551-911D-093AAF4B24DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A685888-6DE8-44D3-A48E-9AE3A2879074}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A685888-6DE8-44D3-A48E-9AE3A2879074}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A685888-6DE8-44D3-A48E-9AE3A2879074}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A685888-6DE8-44D3-A48E-9AE3A2879074}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
