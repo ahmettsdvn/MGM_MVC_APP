@@ -9,7 +9,7 @@ namespace Common.Stations
     /// <summary>
     /// MGM api'sinden çekilen şehir istasyon bilgilerini tutan sınıf
     /// </summary>
-    public class CityStationInfo
+    public class CityStationInfo   
     {
         public int? alternatifHadiseIstNo { get; set; }   
         public decimal boylam { get; set; }
