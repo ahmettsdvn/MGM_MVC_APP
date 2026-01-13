@@ -11,7 +11,7 @@ namespace Common.Stations
     /// </summary>
     public class CityStationInfo
     {
-        public int? alternatifHadiseIstNo { get; set; }
+        public int? alternatifHadiseIstNo { get; set; }   
         public decimal boylam { get; set; }
         public decimal enlem { get; set; }
         public int gunlukTahminIstNo { get; set; }
