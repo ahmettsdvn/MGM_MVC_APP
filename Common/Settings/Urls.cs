@@ -21,7 +21,7 @@ namespace Common.Settings
         /// </summary>
         public const string MGM_API_ILLER_URL = "https://servis.mgm.gov.tr/web/merkezler/iller";
 
-        /// <summary>
+        /// <summary> 
         /// MGM API Belirli bir ildeki istasyon bilgilerini çekmek için kullanılan URL
         /// <para> Kullanımı: MGM_API_IL_ISTASYON_BILGILERI + "İlAdı" </para>
         /// <para> Örnek: https://servis.mgm.gov.tr/web/merkezler?il=BOLU </para>
