@@ -17,7 +17,7 @@ namespace Common.Settings
         public const string MGM_API_BASE_URL = "https://servis.mgm.gov.tr";
 
         /// <summary>
-        /// MGM API Türkiyedeki 81 İl merkez ilçe istasyonlarının bilgilerini çekmek için kullanılan URL
+        /// MGM API Türkiyedeki 81 İl merkez ilçe istasyonlarının bilgilerini çekmek için kullanılan URL 
         /// </summary>
         public const string MGM_API_ILLER_URL = "https://servis.mgm.gov.tr/web/merkezler/iller";
 
