@@ -1,0 +1,33 @@
+name: Main Branch Build
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Build Success Message
+        if: success()
+        run: echo "Build Başarılı :)"
+
+      - name: Build Failed Message
+        if: failure()
+        run: echo "Build Başarısız :("
