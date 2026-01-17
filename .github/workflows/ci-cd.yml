@@ -1,141 +1,103 @@
-name: Junior → Main CI Pipeline
+name: Monorepo Layered CI
 
 on:
   push:
-    branches:
-      - junior
+    branches: [ junior ]
   pull_request:
-    branches:
-      - main
-    types:
-      - opened
-      - synchronize
-      - reopened
-      - ready_for_review
+    branches: [ main ]
 
 env:
   DOTNET_VERSION: 8.0.x
-  SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
-  SONAR_ORG: ${{ secrets.SONAR_ORG }}
-  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  BUILD_LAYERS: ${{ secrets.BUILD_LAYERS }}
   SONAR_HOST_URL: https://sonarcloud.io
 
 jobs:
 
-  junior-build:
-    name: Junior Branch Build
-    if: github.event_name == 'push'
+  ci:
     runs-on: ubuntu-latest
-    outputs:
-      start_time: ${{ steps.timer.outputs.start }}
-    steps:
-      - name: Start Timer
-        id: timer
-        run: echo "start=$(date +%s)" >> $GITHUB_OUTPUT
 
-      - uses: actions/checkout@v4
+    steps:
+      # -------------------------
+      # TIMER
+      # -------------------------
+      - name: ⏱ Start Timer
+        run: echo "START=$(date +%s)" >> $GITHUB_ENV
+
+      # -------------------------
+      # CHECKOUT
+      # -------------------------
+      - name: 📥 Checkout Repo
+        uses: actions/checkout@v4
 
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
-      - name: Restore
-        run: dotnet restore
+      # -------------------------
+      # JUNIOR BUILD
+      # -------------------------
+      - name: 🧱 Build Layers (Junior)
+        if: github.event_name == 'push'
+        run: |
+          echo "Build order: $BUILD_LAYERS"
 
-      - name: Build
-        run: dotnet build --no-restore
+          for layer in $BUILD_LAYERS; do
+            echo "▶️ Building $layer"
+            cd "$layer"
+            dotnet restore
+            dotnet build --no-restore
+            cd ..
+          done
 
-      - name: Result
-        if: success()
-        run: echo "Başarılı :)"
-
-  sonar-analysis:
-    name: Sonar Analysis
-    if: github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'main'
-    runs-on: ubuntu-latest
-    needs: []
-    outputs:
-      sonar_status: ${{ steps.sonar-result.outputs.status }}
-      start_time: ${{ steps.timer.outputs.start }}
-
-    steps:
-      - name: Start Timer
-        id: timer
-        run: echo "start=$(date +%s)" >> $GITHUB_OUTPUT
-
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
-
-      - name: Sonar Begin
+      # -------------------------
+      # SONAR (PR ONLY)
+      # -------------------------
+      - name: 🔍 Sonar Begin
+        if: github.event_name == 'pull_request'
         run: |
           dotnet tool install --global dotnet-sonarscanner
           dotnet sonarscanner begin \
-            /k:"$SONAR_PROJECT_KEY" \
-            /o:"$SONAR_ORG" \
-            /d:sonar.login="$SONAR_TOKEN" \
+            /k:"${{ secrets.SONAR_PROJECT_KEY }}" \
+            /o:"${{ secrets.SONAR_ORG }}" \
+            /d:sonar.login="${{ secrets.SONAR_TOKEN }}" \
             /d:sonar.host.url="$SONAR_HOST_URL"
 
-      - name: Build
-        run: dotnet build
-
-      - name: Sonar End
-        run: dotnet sonarscanner end /d:sonar.login="$SONAR_TOKEN"
-
-      - name: Sonar Result
-        id: sonar-result
+      - name: 🧱 Build Layers (Sonar)
+        if: github.event_name == 'pull_request'
         run: |
-          echo "status=success" >> $GITHUB_OUTPUT
+          for layer in $BUILD_LAYERS; do
+            dotnet build "$layer"
+          done
 
-      - name: Sonar Fail Log
+      - name: 🔍 Sonar End
+        if: github.event_name == 'pull_request'
+        run: dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+
+      # -------------------------
+      # SONAR FAIL
+      # -------------------------
+      - name: ❌ Sonar Fail
         if: failure()
         run: |
           echo "SONAR fail"
-          echo "Sonar URL: $SONAR_HOST_URL/dashboard?id=$SONAR_PROJECT_KEY"
-          echo "status=fail" >> $GITHUB_OUTPUT
+          echo "Sonar URL: https://sonarcloud.io/dashboard?id=${{ secrets.SONAR_PROJECT_KEY }}"
+          echo "Başarısız :("
 
-  main-build-and-merge:
-    name: Main Build & Merge
-    needs: sonar-analysis
-    if: needs.sonar-analysis.outputs.sonar_status == 'success'
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Start Timer
-        id: timer
-        run: echo "start=$(date +%s)" >> $GITHUB_OUTPUT
-
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
-
-      - name: Restore
-        run: dotnet restore
-
-      - name: Build
-        run: dotnet build --no-restore
-
-      - name: Merge PR
+      # -------------------------
+      # MERGE MAIN (SONAR OK)
+      # -------------------------
+      - name: 🔀 Merge PR to Main
+        if: success() && github.event_name == 'pull_request'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh pr merge ${{ github.event.pull_request.number }} --merge --admin
+        run: gh pr merge ${{ github.event.pull_request.number }} --merge --admin
 
-      - name: Finish Success
+      # -------------------------
+      # FINAL RESULT
+      # -------------------------
+      - name: 🎉 Final Result
+        if: success()
         run: |
-          end=$(date +%s)
-          duration=$((end - ${{ needs.sonar-analysis.outputs.start_time }}))
+          END=$(date +%s)
           echo "Başarılı :)"
-          echo "Toplam Süre: ${duration}s"
-
-  fail-result:
-    name: Failure Result
-    if: failure()
-    runs-on: ubuntu-latest
-    steps:
-      - run: |
-          echo "Başarısız :("
+          echo "Toplam Süre: $((END-START)) saniye"
