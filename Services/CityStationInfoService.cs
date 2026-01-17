@@ -1,5 +1,8 @@
 ﻿using Common;
+using Common.Settings;
+using Common.Settings.Constants;
 using Common.Stations;
+using Services.Infrastructre;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +13,24 @@ namespace Services
 {
     internal class CityStationInfoService : ICityStationInfo
     {
+        private readonly BaseHttpClient _client;
+
+        public CityStationInfoService(BaseHttpClient client)
+        {
+            _client = client;
+        }
+
         public CityStationInfo GetCityStationInfo(string cityName)
         {
-            throw new NotImplementedException();
+            var result = _client.GetAsync<CityStationInfo>(UriHelper.MGM_API_IL_ISTASYON_BILGILERI(cityName), MGMHttpHeaders.MGM_HEADERS);
+            CityStationInfo response = new CityStationInfo();
+
+            if (result.IsCompletedSuccessfully)
+            {
+                response = result.Result;
+            }
+
+            return response;    
         }
 
         public CityStationInfo GetCityStationInfo(int stationCode)
