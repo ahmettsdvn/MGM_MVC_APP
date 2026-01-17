@@ -1,7 +1,18 @@
+using Common;
+using Services;
+using Services.Infrastructre;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddHttpClient<BaseHttpClient>(client =>
+{
+});
+
+
+builder.Services.AddScoped<ICityStationInfo, CityStationInfoService>();
 
 var app = builder.Build();
 
