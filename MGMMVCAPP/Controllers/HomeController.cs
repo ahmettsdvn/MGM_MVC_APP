@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Common;
 using MGMMVCAPP.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,15 +8,19 @@ namespace MGMMVCAPP.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly ICityStationInfo _cityStationInfo;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, ICityStationInfo cityStationInfo)
         {
             _logger = logger;
+            _cityStationInfo = cityStationInfo;
         }
 
         public IActionResult Index()
         {
-            return View();
+            var allStations = _cityStationInfo.GetAllStations().OrderBy(x => x.il).Take(100).ToList();
+
+            return View(allStations);
         }
 
         public IActionResult Privacy()

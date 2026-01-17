@@ -45,5 +45,13 @@ namespace Common
         /// <param name="stationCode"></param>
         /// <returns></returns>
         CityStationInfo GetDistrictStationInfo(int stationCode);
+
+        /// <summary>
+        /// Tüm istasyonlar
+        /// </summary>
+        /// <param name="stationCode"></param>
+        /// <returns></returns>
+        List<AllStations> GetAllStations();
+
     }
 }

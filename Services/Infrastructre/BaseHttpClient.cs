@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -33,29 +35,48 @@ namespace Services.Infrastructre
         /// <returns></returns>
         internal async Task<T> GetAsync<T>(string url, Dictionary<string, string> headers = null)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, url);
-
-            // Header ekleme
-            if (headers != null)
+            try
             {
-                foreach (var header in headers)
+                var request = new HttpRequestMessage(HttpMethod.Get, url);
+
+                // Header ekleme
+                if (headers != null)
                 {
-                    request.Headers.Add(header.Key, header.Value);
+                    foreach (var header in headers)
+                    {
+                        request.Headers.Add(header.Key, header.Value);
+                    }
                 }
+
+                var response = await _httpClient.SendAsync(request);
+
+                response.EnsureSuccessStatusCode();
+
+                var json = await response.Content.ReadAsStringAsync();
+
+                var type = typeof(T);
+
+                bool isList = typeof(IEnumerable).IsAssignableFrom(type)
+                              && type != typeof(string);
+
+                if (isList) 
+                {
+                    var result = JsonConvert.DeserializeObject<T>(json);
+
+                    return result;
+                }
+                else
+                {
+                    var result = JsonConvert.DeserializeObject<List<T>>(json);
+
+                    return result[0];
+                }                    
             }
-
-            var response = await _httpClient.SendAsync(request);
-
-            response.EnsureSuccessStatusCode();
-
-            var json = await response.Content.ReadAsStringAsync();
-
-            var result = JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions
+            catch (Exception)
             {
-                PropertyNameCaseInsensitive = true
-            });
 
-            return result;
+                throw;
+            }
         }
     }
 }

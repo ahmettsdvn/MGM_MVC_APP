@@ -1,8 +1,52 @@
-﻿@{
+﻿@using Common.Stations
+
+@model List<AllStations>
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Türkiye Geneli Tüm Meteoroloji İstasyonları</h1>
+    
+
+   <div class="container">
+
+        @if (Model == null || !Model.Any())
+        {
+            <div class="alert alert-warning">
+                Gösterilecek istasyon bulunamadı.
+            </div>
+        }
+        else
+        {
+            <table class="table table-hover table-bordered">
+                <thead class="table-dark">
+                    <tr>
+                        <th>İl</th>
+                        <th>İlçe</th>
+                        <th>İstasyon Adı</th>
+                        <th>Detay</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.il</td>
+                            <td>@item.ilce</td>
+                            <td>@item.istAd</td>
+                            <td>
+                                <button class="btn btn-primary">İstasyon Detay</button>
+                            </td>
+
+                            
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+   </div>
 </div>

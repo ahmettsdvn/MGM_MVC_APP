@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Services
 {
-    internal class CityStationInfoService : ICityStationInfo
+    public class CityStationInfoService : ICityStationInfo
     {
         private readonly BaseHttpClient _client;
 
@@ -20,17 +20,18 @@ namespace Services
             _client = client;
         }
 
+        public List<AllStations> GetAllStations()
+        {
+            var result = _client.GetAsync<List<AllStations>>(UriHelper.MGM_TUM_ISTASYONLAR(), MGMHttpHeaders.MGM_HEADERS);
+
+            return result.Result;
+        }
+
         public CityStationInfo GetCityStationInfo(string cityName)
         {
             var result = _client.GetAsync<CityStationInfo>(UriHelper.MGM_API_IL_ISTASYON_BILGILERI(cityName), MGMHttpHeaders.MGM_HEADERS);
-            CityStationInfo response = new CityStationInfo();
 
-            if (result.IsCompletedSuccessfully)
-            {
-                response = result.Result;
-            }
-
-            return response;    
+            return result.Result;    
         }
 
         public CityStationInfo GetCityStationInfo(int stationCode)

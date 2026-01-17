@@ -95,5 +95,15 @@ namespace Common.Settings
             return $"{MGM_API_BASE_URL}/{url}";
         }
 
+        /// <summary>
+        /// Tüm istasyonlar
+        /// </summary>
+        /// <returns></returns>
+        public static string MGM_TUM_ISTASYONLAR()
+        {
+            var url = "web/istasyonlar";
+            return $"{MGM_API_BASE_URL}/{url}";
+        }
+
     }
 }
