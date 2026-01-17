@@ -1,29 +1,61 @@
 name: Junior CI & Auto PR (.NET 8)
 
 on:
-  push:
-    branches:
-      - "junior/**"
+push:
+branches:
+- "junior/**"
 
 permissions:
-  contents: write
-  pull-requests: write
+contents: write
+pull-requests: write
 
 jobs:
-  build-and-pr:
-    runs-on: ubuntu-latest
+build-and-pr:
+runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+```
+steps:
+  - name: Checkout
+    uses: actions/checkout@v4
 
-      - name: Setup .NET 8
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '8.0.x'
+  - name: Setup .NET 8
+    uses: actions/setup-dotnet@v4
+    with:
+      dotnet-version: "8.0.x"
 
-      - name: Restore
-        run: dotnet restore
+  - name: Restore
+    run: dotnet restore
 
-      - name: Build
-        run: dotnet build --configuration Release --no-restore
+  - name: Build Layers (Dynamic)
+    env:
+      BUILD_LAYERS: ${{ vars.BUILD_LAYERS }}
+    run: |
+      echo "## 🚀 Build Summary" >> $GITHUB_STEP_SUMMARY
+      echo "" >> $GITHUB_STEP_SUMMARY
+      echo "| Layer | Status |" >> $GITHUB_STEP_SUMMARY
+      echo "|------|--------|" >> $GITHUB_STEP_SUMMARY
+
+      for layer in $BUILD_LAYERS
+      do
+        echo "================================="
+        echo "🔨 Building layer: $layer"
+        echo "================================="
+
+        dotnet build ./$layer --configuration Release
+        exitCode=$?
+
+        if [ $exitCode -ne 0 ]; then
+          echo "❌ $layer | FAILED" >> $GITHUB_STEP_SUMMARY
+          echo "| $layer | ❌ Failed |" >> $GITHUB_STEP_SUMMARY
+
+          echo ""
+          echo "❌ BUILD FAILED"
+          echo "➡️ Failed layer: $layer"
+          echo "➡️ Exit code: $exitCode"
+          exit $exitCode
+        fi
+
+        echo "| $layer | ✅ Success |" >> $GITHUB_STEP_SUMMARY
+        echo "✅ $layer build successful"
+        echo ""
+      done
