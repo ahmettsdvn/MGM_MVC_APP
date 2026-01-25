@@ -1,18 +1,20 @@
-﻿@using Common.Stations
+﻿@using Common.DTO
+@using Common.Stations
 
-@model List<AllStations> 
+@model PagedResult<AllStations>
 
 @{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Türkiye Geneli Tüm Meteoroloji İstasyonları</h1>
-    
+    <div class="m-5">
+        <h3 class="display-4">Türkiye Geneli Tüm Meteoroloji İstasyonları</h3>
+    </div>    
 
    <div class="container">
 
-        @if (Model == null || !Model.Any())
+        @if (Model == null || !Model.Items.Any())
         {
             <div class="alert alert-warning">
                 Gösterilecek istasyon bulunamadı.
@@ -31,14 +33,20 @@
                 </thead>
 
                 <tbody>
-                    @foreach (var item in Model)
+                    @foreach (var item in Model.Items)
                     {
                         <tr>
                             <td>@item.il</td>
                             <td>@item.ilce</td>
                             <td>@item.istAd</td>
                             <td>
-                                <button class="btn btn-primary">İstasyon Detay</button>
+                                <button 
+                                    class="btn btn-primary"
+                                        data-id="@item.istNo"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#detailModal">
+                                    İstasyon Detay
+                                </button>
                             </td>
 
                             
@@ -46,8 +54,81 @@
                     }
                 </tbody>
             </table>
+
+
+            <nav aria-label="Pagination">
+                <ul class="pagination">
+                    <li class="page-item @(Model.HasPrev ? "" : "disabled")">
+                        <a class="page-link" href="@Url.Action("Index", new { page = Model.Page - 1 })">Önceki</a>
+                    </li>
+
+                    @{
+                        var start = Math.Max(1, Model.Page - 2);
+                        var end = Math.Min(Model.TotalPages, Model.Page + 2);
+                    }
+
+                    @for (int i = start; i <= end; i++)
+                    {
+                        <li class="page-item @(i == Model.Page ? "active" : "")">
+                            <a class="page-link" href="@Url.Action("Index", new { page = i })">@i</a>
+                        </li>
+                    }
+
+                    <li class="page-item @(Model.HasNext ? "" : "disabled")">
+                        <a class="page-link" href="@Url.Action("Index", new { page = Model.Page + 1 })">Sonraki</a>
+                    </li>
+                </ul>
+            </nav>
+
         }
+
+        <div class="modal fade" id="detailModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">İstasyon Detay</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+                    </div>
+
+                    <div class="modal-body" id="detailModalBody">
+                        <div class="text-center py-4">Yükleniyor...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
    </div>
 </div>
+
+
+<script>
+    const modalEl = document.getElementById('detailModal');
+    const bodyEl = document.getElementById('detailModalBody');
+
+    modalEl.addEventListener('show.bs.modal', async function (event) {
+      const button = event.relatedTarget; // tıklanan buton
+      const id = button.getAttribute('data-id');
+
+      bodyEl.innerHTML = `<div class="text-center py-4">Yükleniyor...</div>`;
+
+      try {
+        const res = await fetch(`/Home/DetailsPartial?id=${id}`, {
+          headers: { "X-Requested-With": "XMLHttpRequest" }
+        });
+
+        if (!res.ok) throw new Error("Detay getirilemedi.");
+        const html = await res.text();
+        bodyEl.innerHTML = html;
+
+      } catch (err) {
+        bodyEl.innerHTML = `<div class="alert alert-danger mb-0">${err.message}</div>`;
+      }
+    });
+
+    modalEl.addEventListener('hidden.bs.modal', function () {
+      bodyEl.innerHTML = ''; // kapatınca temizle (opsiyonel)
+    });
+</script>
+
   
