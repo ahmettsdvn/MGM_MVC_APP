@@ -1,7 +1,7 @@
 ﻿@using Common.DTO
 @using Common.Stations
 
-@model PagedResult<AllStations>
+@model PagedResult<AllStations, CityDistrictDTO>
 
 @{
     ViewData["Title"] = "Home Page";
@@ -10,7 +10,55 @@
 <div class="text-center">
     <div class="m-5">
         <h3 class="display-4">Türkiye Geneli Tüm Meteoroloji İstasyonları</h3>
-    </div>    
+    </div>  
+    
+    <div class="container mb-5 ml-5 mr-5">
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                    <b>FİLTRELE</b>
+                </button>
+            </h2>
+            <div id="flush-collapseOne" class="accordion-collapse collapse p-4" data-bs-parent="#accordionFlushExample">                
+                <div class="row">
+                    <form method="get" asp-action="Index" class="row g-2 align-items-end" id="filterForm">
+
+                        <div class="col-6">
+                            <select id="citySelect" name="cityId" class="form-select">
+                                <option value="">İl Seçiniz...</option>
+                                @foreach (var item in Model.OtherParams.CityList)
+                                {
+                                    <option value="@item.CityId">@item.CityName</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="col-6">
+                            <select id="districtSelect" name="districtName" class="form-select" disabled>
+                                <option value="">İlçe Seçiniz...</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12 mt-4 d-flex justify-content-end">
+                            <button type="submit" class="btn btn-success">FİLTRELE</button>
+                        </div>
+
+                    </form>
+                </div>
+
+            </div>
+        </div>
+
+
+
+        <form class="mt-3 mb-3" method="get" action="@Url.Action("Index")" id="refreshForm">
+            <div class="row">
+                <div class="col-12 mt-4 d-flex justify-content-end">
+                    <button type="submit" class="btn btn-primary">YENİLE</button>
+                </div>
+            </div>
+        </form>
+    </div>
 
    <div class="container">
 
@@ -127,7 +175,53 @@
     });
 
     modalEl.addEventListener('hidden.bs.modal', function () {
-      bodyEl.innerHTML = ''; // kapatınca temizle (opsiyonel)
+      bodyEl.innerHTML = ''; 
+    });
+        async function loadDistricts(cityId) {
+        const districtSelect = document.getElementById("districtSelect");
+
+        districtSelect.innerHTML = "";
+        districtSelect.disabled = true;
+
+        if (!cityId) {
+            districtSelect.innerHTML = `<option value="">Önce il seçiniz...</option>`;
+            return;
+        }
+
+        const res = await fetch(`/Home/GetDistricts?cityId=${cityId}`);
+        const data = await res.json();
+
+        districtSelect.innerHTML = `<option value="">İlçe Seçiniz...</option>`;
+
+        data.forEach(x => {
+            const opt = document.createElement("option");
+            opt.value = x.districtName;
+            opt.textContent = x.districtName;
+            districtSelect.appendChild(opt);
+        });
+
+        districtSelect.disabled = false;
+    }
+
+    document.getElementById("citySelect").addEventListener("change", function () {
+        loadDistricts(this.value);
+    });
+
+    document.getElementById("filterForm").addEventListener("submit", function (e) {
+        const city = document.getElementById("citySelect").value;
+        const district = document.getElementById("districtSelect").value;
+
+        if (!city) {
+            e.preventDefault();
+            alert("Lütfen önce bir il seçiniz.");
+            return;
+        }
+
+        if (!district) {
+            e.preventDefault();
+            alert("Lütfen bir ilçe seçiniz.");
+            return;
+        }
     });
 </script>
 
