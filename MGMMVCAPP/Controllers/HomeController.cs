@@ -4,7 +4,9 @@ using Common.Stations;
 using MGMMVCAPP.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Services.Helper.TurkeyCityDistrict;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using static System.Collections.Specialized.BitVector32;
 
 namespace MGMMVCAPP.Controllers
@@ -22,32 +24,53 @@ namespace MGMMVCAPP.Controllers
             _cityStationInfo = cityStationInfo;
         }
 
-        public IActionResult Index(int page = 1)
+        public async Task<IActionResult> Index(int page = 1, int? cityId = null, string? districtName = null)
         {
             // page 1'den baþlasýn
             if (page < 1) page = 1;
 
+            var query = _cityStationInfo.GetAllStations().AsQueryable();
+
+            if (cityId.HasValue)
+                query = query.Where(x => x.ilPlaka == cityId.Value);
+
+            if (!string.IsNullOrWhiteSpace(districtName))
+                query = query.Where(x => x.ilce.ToLower() == districtName.ToLower());
+
             // toplam kayýt sayýsý
-            int totalCount = _cityStationInfo.GetAllStations().Count;
+            int totalCount = query.Count();
 
             // veri alýndý viewa gönderildi
-            var allStations = _cityStationInfo
-                .GetAllStations()
+            var allStations = query
                 .OrderBy(x => x.il)
                 .Skip((page - 1) * PAGE_SIZE)
                 .Take(PAGE_SIZE)
                 .ToList();
 
+            CityDistrictDTO parameters = new CityDistrictDTO
+            {
+                CityList = TurkeyCityDistrictHelper.GetTurkeyCity(),
+            };
+
             // viev Model DTO
-            var vm = new PagedResult<AllStations>
+            var vm = new PagedResult<AllStations, CityDistrictDTO>
             {
                 Items = allStations,
                 Page = page,
                 PageSize = PAGE_SIZE,
-                TotalCount = totalCount
+                TotalCount = totalCount,
+                OtherParams = parameters
             };
 
             return View(vm);
+        }
+
+        [HttpGet]
+        public IActionResult GetDistricts(int cityId)
+        {
+            var districts = TurkeyCityDistrictHelper.GetDistrictByCityCode(cityId);
+
+            return Json(districts);
         }
 
         public IActionResult Privacy()

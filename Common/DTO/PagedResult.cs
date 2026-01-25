@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Common.DTO
 {
-    public class PagedResult<T> where T : class
+    public class PagedResult<T, R> where T : class
+        where R : class
     {
         public List<T> Items { get; set; } = new();
         public int Page { get; set; }
@@ -17,5 +18,9 @@ namespace Common.DTO
         public bool HasPrev => Page > 1;
         public bool HasNext => Page < TotalPages;
 
+        public R OtherParams
+        {
+            get; set;
+        }
     }
 }
