@@ -13,6 +13,8 @@ builder.Services.AddHttpClient<BaseHttpClient>(client =>
 
 
 builder.Services.AddScoped<ICityStationInfo, CityStationInfoService>();
+builder.Services.AddScoped<ILastStatusInfo, LastStatusInfoServices>();
+builder.Services.AddScoped<IWeatherForecast, WeatherForecastServices>();
 
 var app = builder.Build();
 

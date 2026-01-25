@@ -1,5 +1,8 @@
 ﻿using Common;
+using Common.Settings;
+using Common.Settings.Constants;
 using Common.Weather;
+using Services.Infrastructre;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,16 +11,25 @@ using System.Threading.Tasks;
 
 namespace Services
 {
-    internal class WeatherForecastServices : IWeatherForecast
+    public class WeatherForecastServices : IWeatherForecast
     {
+        private readonly BaseHttpClient _client;
+
+        public WeatherForecastServices(BaseHttpClient client)
+        {
+            _client = client;
+        }
+
         public DailyWeatherForecast GetDailyWeatherForecast(int stationId)
         {
-            throw new NotImplementedException();
+            var result = _client.GetAsync<DailyWeatherForecast>(UriHelper.MGM_API_GUNLUK_HAVA_DURUMU(stationId), MGMHttpHeaders.MGM_HEADERS).Result;
+            return result;
         }
 
         public HourlyWeatherForecast GetHourlyWeatherForecast(int stationId)
         {
-            throw new NotImplementedException();
+            var result = _client.GetAsync<HourlyWeatherForecast>(UriHelper.MGM_API_SAATLIK_HAVA_DURUMU(stationId), MGMHttpHeaders.MGM_HEADERS).Result;
+            return result;  
         }
     }
 }

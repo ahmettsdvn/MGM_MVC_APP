@@ -35,16 +35,9 @@ namespace Common
         /// <summary>
         /// Verilen ilçenin istasyon bilgilerini döner
         /// </summary>
-        /// <param name="cityName"></param>
-        /// <returns></returns>
-        CityStationInfo GetDistrictStationInfo(string districtName);
-
-        /// <summary>
-        /// Verilen ilçenin istasyon bilgilerini döner
-        /// </summary>
         /// <param name="stationCode"></param>
         /// <returns></returns>
-        CityStationInfo GetDistrictStationInfo(int stationCode);
+        CityStationInfo GetDistrictStationInfo(string cityName, string districtName);
 
         /// <summary>
         /// Tüm istasyonlar

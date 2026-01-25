@@ -36,22 +36,53 @@ namespace Services
 
         public CityStationInfo GetCityStationInfo(int stationCode)
         {
-            throw new NotImplementedException();
+            List<AllStations> stations = GetAllStations().Where(i => i.istNo == stationCode).ToList();
+            CityStationInfo package = new CityStationInfo();
+
+            if(stations.Count> 0)   
+            {
+                AllStations station = stations.First();//stations[0];
+
+                package.il = station.il;
+                package.ilce = station.ilce;
+                package.ilPlaka = station.ilPlaka;
+                package.boylam = (decimal)station.boylam;
+                package.enlem = (decimal)station.enlem;
+                package.yukseklik = station.yukseklik;
+            }
+            return package;
         }
 
         public List<CityStationInfo> GetCityStationInfoList()
         {
-            throw new NotImplementedException();
+            var result = _client.GetAsync<List<CityStationInfo>>(UriHelper.MGM_API_ILLER_URL(), MGMHttpHeaders.MGM_HEADERS).Result;
+            return result;
         }
 
-        public CityStationInfo GetDistrictStationInfo(string districtName)
+        public CityStationInfo GetDistrictStationInfo(string cityName, string districtName)
         {
-            throw new NotImplementedException();
+            var result = _client.GetAsync<CityStationInfo>(UriHelper.MGM_API_IL_ILCE_ISTASYON_BILGILERI(cityName, districtName), MGMHttpHeaders.MGM_HEADERS).Result;
+
+            return result;
         }
 
         public CityStationInfo GetDistrictStationInfo(int stationCode)
         {
-            throw new NotImplementedException();
+            List<AllStations> stations = GetAllStations().Where(i => i.istNo == stationCode).ToList();
+            CityStationInfo package = new CityStationInfo();
+
+            if (stations.Count > 0)
+            {
+                AllStations station = stations.First();//stations[0];
+
+                package.il = station.il;
+                package.ilce = station.ilce;
+                package.ilPlaka = station.ilPlaka;
+                package.boylam = (decimal)station.boylam;
+                package.enlem = (decimal)station.enlem;
+                package.yukseklik = station.yukseklik;
+            }
+            return package;
         }
     }
 }
