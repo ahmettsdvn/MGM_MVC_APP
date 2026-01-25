@@ -1,6 +1,7 @@
-﻿@using Common.Stations
+﻿@using Common.DTO
+@using Common.Stations
 
-@model List<AllStations> 
+@model PagedResult<AllStations>
 
 @{
     ViewData["Title"] = "Home Page";
@@ -12,7 +13,7 @@
 
    <div class="container">
 
-        @if (Model == null || !Model.Any())
+        @if (Model == null || !Model.Items.Any())
         {
             <div class="alert alert-warning">
                 Gösterilecek istasyon bulunamadı.
@@ -31,7 +32,7 @@
                 </thead>
 
                 <tbody>
-                    @foreach (var item in Model)
+                    @foreach (var item in Model.Items)
                     {
                         <tr>
                             <td>@item.il</td>
@@ -52,6 +53,32 @@
                     }
                 </tbody>
             </table>
+
+
+            <nav aria-label="Pagination">
+                <ul class="pagination">
+                    <li class="page-item @(Model.HasPrev ? "" : "disabled")">
+                        <a class="page-link" href="@Url.Action("Index", new { page = Model.Page - 1 })">Önceki</a>
+                    </li>
+
+                    @{
+                        var start = Math.Max(1, Model.Page - 2);
+                        var end = Math.Min(Model.TotalPages, Model.Page + 2);
+                    }
+
+                    @for (int i = start; i <= end; i++)
+                    {
+                        <li class="page-item @(i == Model.Page ? "active" : "")">
+                            <a class="page-link" href="@Url.Action("Index", new { page = i })">@i</a>
+                        </li>
+                    }
+
+                    <li class="page-item @(Model.HasNext ? "" : "disabled")">
+                        <a class="page-link" href="@Url.Action("Index", new { page = Model.Page + 1 })">Sonraki</a>
+                    </li>
+                </ul>
+            </nav>
+
         }
 
         <div class="modal fade" id="detailModal" tabindex="-1" aria-hidden="true">
