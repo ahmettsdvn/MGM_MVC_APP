@@ -1,0 +1,103 @@
+name: Monorepo Layered CI
+
+on:
+  push:
+    branches: [ junior ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  DOTNET_VERSION: 8.0.x
+  BUILD_LAYERS: ${{ secrets.BUILD_LAYERS }}
+  SONAR_HOST_URL: https://sonarcloud.io
+
+jobs:
+
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      # -------------------------
+      # TIMER
+      # -------------------------
+      - name: ⏱ Start Timer
+        run: echo "START=$(date +%s)" >> $GITHUB_ENV
+
+      # -------------------------
+      # CHECKOUT
+      # -------------------------
+      - name: 📥 Checkout Repo
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      # -------------------------
+      # JUNIOR BUILD
+      # -------------------------
+      - name: 🧱 Build Layers (Junior)
+        if: github.event_name == 'push'
+        run: |
+          echo "Build order: $BUILD_LAYERS"
+
+          for layer in $BUILD_LAYERS; do
+            echo "▶️ Building $layer"
+            cd "$layer"
+            dotnet restore
+            dotnet build --no-restore
+            cd ..
+          done
+
+      # -------------------------
+      # SONAR (PR ONLY)
+      # -------------------------
+      - name: 🔍 Sonar Begin
+        if: github.event_name == 'pull_request'
+        run: |
+          dotnet tool install --global dotnet-sonarscanner
+          dotnet sonarscanner begin \
+            /k:"${{ secrets.SONAR_PROJECT_KEY }}" \
+            /o:"${{ secrets.SONAR_ORG }}" \
+            /d:sonar.login="${{ secrets.SONAR_TOKEN }}" \
+            /d:sonar.host.url="$SONAR_HOST_URL"
+
+      - name: 🧱 Build Layers (Sonar)
+        if: github.event_name == 'pull_request'
+        run: |
+          for layer in $BUILD_LAYERS; do
+            dotnet build "$layer"
+          done
+
+      - name: 🔍 Sonar End
+        if: github.event_name == 'pull_request'
+        run: dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+
+      # -------------------------
+      # SONAR FAIL
+      # -------------------------
+      - name: ❌ Sonar Fail
+        if: failure()
+        run: |
+          echo "SONAR fail"
+          echo "Sonar URL: https://sonarcloud.io/dashboard?id=${{ secrets.SONAR_PROJECT_KEY }}"
+          echo "Başarısız :("
+
+      # -------------------------
+      # MERGE MAIN (SONAR OK)
+      # -------------------------
+      - name: 🔀 Merge PR to Main
+        if: success() && github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh pr merge ${{ github.event.pull_request.number }} --merge --admin
+
+      # -------------------------
+      # FINAL RESULT
+      # -------------------------
+      - name: 🎉 Final Result
+        if: success()
+        run: |
+          END=$(date +%s)
+          echo "Başarılı :)"
+          echo "Toplam Süre: $((END-START)) saniye"
