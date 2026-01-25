@@ -29,6 +29,14 @@ namespace MGMMVCAPP.Controllers
             return View();
         }
 
+        public IActionResult DetailsPartial(int id)
+        {
+            var model = _cityStationInfo.GetCityStationInfo(id); 
+            if (model == null) return NotFound();
+
+            return PartialView("_DetailsPartial", model);
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

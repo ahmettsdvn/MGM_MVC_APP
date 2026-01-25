@@ -1,0 +1,39 @@
+﻿@using System.Globalization
+@model Common.Stations.CityStationInfo
+
+@{
+    var lat = Model.enlem.ToString(CultureInfo.InvariantCulture);
+    var lng = Model.boylam.ToString(CultureInfo.InvariantCulture);
+    decimal zoomLevel = 17M;
+    var mapUrl = $"https://www.google.com/maps/@{lat},{lng},{zoomLevel}z";
+}
+
+<div class="container-fluid">
+    <div class="alert alert-success" role="alert">
+        <h6>Şehir</h6> 
+        <p>@Model.il/@Model.ilce</p>
+    </div>
+    <div class="alert alert-warning" role="alert"
+        <h6>Enlem</h6>
+        <p>@Model.enlem</p>
+    </div> 
+    <div class="alert alert-info" role="alert">
+        <h6>Boylam</h6>
+        <p>@Model.boylam</p>
+    </div>
+    <div class="alert alert-primary" role="alert">
+        <h6>İstasyon Rakım</h6>
+        <p>@Model.yukseklik mt.</p>
+    </div>
+    <div class="alert alert-secondary" role="alert">
+        <h6>Maps</h6>
+        <p>
+            <a href="@mapUrl"
+               class="link-underline-primary"
+               target="_blank"
+               rel="noopener">
+                İstasyonu Haritada Göster
+            </a>
+        </p>
+    </div>
+</div>
