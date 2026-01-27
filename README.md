@@ -210,8 +210,7 @@ Header bilgileri eksik gönderildiğinde 403 Forbidden hatası alınabilir.
 
 📌 Geliştirme & Katkı
 
-Pull request ve issue açabilirsiniz. Katkılar memnuniyetle karşılanır 🙌
-
+Oğuz Taşkın (oguz-taskin) 
 
 ---
 
