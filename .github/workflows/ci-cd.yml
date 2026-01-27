@@ -12,7 +12,6 @@ env:
   SONAR_HOST_URL: https://sonarcloud.io
 
 jobs:
-
   ci:
     runs-on: ubuntu-latest
 
@@ -29,18 +28,18 @@ jobs:
       - name: 📥 Checkout Repo
         uses: actions/checkout@v4
 
-      - uses: actions/setup-dotnet@v4
+      - name: 🧩 Setup .NET
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       # -------------------------
-      # JUNIOR BUILD
+      # JUNIOR BUILD (push)
       # -------------------------
       - name: 🧱 Build Layers (Junior)
         if: github.event_name == 'push'
         run: |
           echo "Build order: $BUILD_LAYERS"
-
           for layer in $BUILD_LAYERS; do
             echo "▶️ Building $layer"
             cd "$layer"
@@ -50,18 +49,29 @@ jobs:
           done
 
       # -------------------------
-      # SONAR (PR ONLY)
+      # SONAR BEGIN (PR)
       # -------------------------
       - name: 🔍 Sonar Begin
         if: github.event_name == 'pull_request'
+        env:
+          SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
+          SONAR_ORG: ${{ secrets.SONAR_ORG }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           dotnet tool install --global dotnet-sonarscanner
-          dotnet sonarscanner begin \
-            /k:"${{ secrets.SONAR_PROJECT_KEY }}" \
-            /o:"${{ secrets.SONAR_ORG }}" \
-            /d:sonar.login="${{ secrets.SONAR_TOKEN }}" \
-            /d:sonar.host.url="$SONAR_HOST_URL"
 
+          dotnet sonarscanner begin \
+            /k:"$SONAR_PROJECT_KEY" \
+            /o:"$SONAR_ORG" \
+            /d:sonar.login="$SONAR_TOKEN" \
+            /d:sonar.host.url="$SONAR_HOST_URL" \
+            /d:sonar.pullrequest.key="${{ github.event.pull_request.number }}" \
+            /d:sonar.pullrequest.branch="${{ github.head_ref }}" \
+            /d:sonar.pullrequest.base="${{ github.base_ref }}"
+
+      # -------------------------
+      # BUILD FOR SONAR
+      # -------------------------
       - name: 🧱 Build Layers (Sonar)
         if: github.event_name == 'pull_request'
         run: |
@@ -69,28 +79,14 @@ jobs:
             dotnet build "$layer"
           done
 
+      # -------------------------
+      # SONAR END
+      # -------------------------
       - name: 🔍 Sonar End
         if: github.event_name == 'pull_request'
-        run: dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
-
-      # -------------------------
-      # SONAR FAIL
-      # -------------------------
-      - name: ❌ Sonar Fail
-        if: failure()
-        run: |
-          echo "SONAR fail"
-          echo "Sonar URL: https://sonarcloud.io/dashboard?id=${{ secrets.SONAR_PROJECT_KEY }}"
-          echo "Başarısız :("
-
-      # -------------------------
-      # MERGE MAIN (SONAR OK)
-      # -------------------------
-      - name: 🔀 Merge PR to Main
-        if: success() && github.event_name == 'pull_request'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh pr merge ${{ github.event.pull_request.number }} --merge --admin
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: dotnet sonarscanner end /d:sonar.login="$SONAR_TOKEN"
 
       # -------------------------
       # FINAL RESULT
@@ -99,5 +95,5 @@ jobs:
         if: success()
         run: |
           END=$(date +%s)
-          echo "Başarılı :)"
+          echo "Başarılı ✅"
           echo "Toplam Süre: $((END-START)) saniye"
