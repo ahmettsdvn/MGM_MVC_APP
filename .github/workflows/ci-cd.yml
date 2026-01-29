@@ -4,7 +4,7 @@ on:
   push:
     branches: [ junior ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, junior, senior ]
 
 env:
   DOTNET_VERSION: 8.0.x
@@ -23,23 +23,27 @@ jobs:
         run: echo "START=$(date +%s)" >> $GITHUB_ENV
 
       # -------------------------
-      # CHECKOUT
+      # CHECKOUT (FULL HISTORY)
       # -------------------------
       - name: 📥 Checkout Repo
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
+      # -------------------------
+      # SETUP .NET
+      # -------------------------
       - name: 🧩 Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       # -------------------------
-      # JUNIOR BUILD (push)
+      # JUNIOR BUILD (PUSH)
       # -------------------------
-      - name: 🧱 Build Layers (Junior)
-        if: github.event_name == 'push'
+      - name: 🧱 Build Layers (Junior Push)
+        if: github.event_name == 'push' && github.ref_name == 'junior'
         run: |
-          echo "Build order: $BUILD_LAYERS"
           for layer in $BUILD_LAYERS; do
             echo "▶️ Building $layer"
             cd "$layer"
@@ -48,11 +52,18 @@ jobs:
             cd ..
           done
 
+      # =========================================================
+      # SONAR — SADECE junior → main PR
+      # =========================================================
+
       # -------------------------
-      # SONAR BEGIN (PR)
+      # SONAR BEGIN
       # -------------------------
-      - name: 🔍 Sonar Begin
-        if: github.event_name == 'pull_request'
+      - name: 🔍 Sonar Begin (junior → main)
+        if: >
+          github.event_name == 'pull_request' &&
+          github.head_ref == 'junior' &&
+          github.base_ref == 'main'
         env:
           SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
           SONAR_ORG: ${{ secrets.SONAR_ORG }}
@@ -66,14 +77,20 @@ jobs:
             /d:sonar.login="$SONAR_TOKEN" \
             /d:sonar.host.url="$SONAR_HOST_URL" \
             /d:sonar.pullrequest.key="${{ github.event.pull_request.number }}" \
-            /d:sonar.pullrequest.branch="${{ github.head_ref }}" \
-            /d:sonar.pullrequest.base="${{ github.base_ref }}"
+            /d:sonar.pullrequest.branch="junior" \
+            /d:sonar.pullrequest.base="main" \
+            /d:sonar.newCode.referenceBranch="main" \
+            /d:sonar.scm.provider=git \
+            /d:sonar.sourceEncoding=UTF-8
 
       # -------------------------
       # BUILD FOR SONAR
       # -------------------------
       - name: 🧱 Build Layers (Sonar)
-        if: github.event_name == 'pull_request'
+        if: >
+          github.event_name == 'pull_request' &&
+          github.head_ref == 'junior' &&
+          github.base_ref == 'main'
         run: |
           for layer in $BUILD_LAYERS; do
             dotnet build "$layer"
@@ -82,8 +99,11 @@ jobs:
       # -------------------------
       # SONAR END
       # -------------------------
-      - name: 🔍 Sonar End
-        if: github.event_name == 'pull_request'
+      - name: 🔍 Sonar End (junior → main)
+        if: >
+          github.event_name == 'pull_request' &&
+          github.head_ref == 'junior' &&
+          github.base_ref == 'main'
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: dotnet sonarscanner end /d:sonar.login="$SONAR_TOKEN"
