@@ -1,0 +1,204 @@
+{
+  "info": {
+    "name": "Meteoroloji Genel Müdürlüğü API",
+    "_postman_id": "6c6c2e2a-9d7a-4b42-b6e4-mgm-api",
+    "description": "MGM servis.mgm.gov.tr GET API istekleri",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "İller (81 İl)",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}/web/merkezler/iller",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "web",
+            "merkezler",
+            "iller"
+          ]
+        }
+      }
+    },
+    {
+      "name": "İl İstasyon Bilgileri",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}/web/merkezler?il={{cityName}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "web",
+            "merkezler"
+          ],
+          "query": [
+            {
+              "key": "il",
+              "value": "{{cityName}}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "İl + İlçe İstasyon Bilgileri",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}/web/merkezler?il={{cityName}}&ilce={{districtName}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "web",
+            "merkezler"
+          ],
+          "query": [
+            {
+              "key": "il",
+              "value": "{{cityName}}"
+            },
+            {
+              "key": "ilce",
+              "value": "{{districtName}}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "İl Tüm İstasyonlar (İl-İlçe)",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}/web/merkezler/ililcesi?il={{cityName}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "web",
+            "merkezler",
+            "ililcesi"
+          ],
+          "query": [
+            {
+              "key": "il",
+              "value": "{{cityName}}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Günlük Hava Durumu (5 Günlük)",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}/web/tahminler/gunluk?istno={{stationId}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "web",
+            "tahminler",
+            "gunluk"
+          ],
+          "query": [
+            {
+              "key": "istno",
+              "value": "{{stationId}}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Saatlik Hava Durumu",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}/web/tahminler/saatlik?istno={{stationId}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "web",
+            "tahminler",
+            "saatlik"
+          ],
+          "query": [
+            {
+              "key": "istno",
+              "value": "{{stationId}}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Son Durumlar",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}/web/sondurumlar?merkezid={{centerId}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "web",
+            "sondurumlar"
+          ],
+          "query": [
+            {
+              "key": "merkezid",
+              "value": "{{centerId}}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Tüm İstasyonlar",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}/web/istasyonlar",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "web",
+            "istasyonlar"
+          ]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://servis.mgm.gov.tr"
+    },
+    {
+      "key": "cityName",
+      "value": "bolu"
+    },
+    {
+      "key": "districtName",
+      "value": "merkez"
+    },
+    {
+      "key": "stationId",
+      "value": "17020"
+    },
+    {
+      "key": "centerId",
+      "value": "17020"
+    }
+  ]
+}

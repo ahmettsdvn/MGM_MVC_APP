@@ -68,7 +68,7 @@ namespace MGMMVCAPP.Controllers
         [HttpGet]
         public IActionResult GetDistricts(int cityId)
         {
-            var districts = TurkeyCityDistrictHelper.GetDistrictByCityCode(cityId);
+            var districts = TurkeyCityDistrictHelper.GetDistrictByCityCode(cityId); 
 
             return Json(districts);
         }
