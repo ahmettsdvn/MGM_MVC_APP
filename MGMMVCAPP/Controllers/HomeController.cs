@@ -16,7 +16,7 @@ namespace MGMMVCAPP.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly ICityStationInfo _cityStationInfo;
 
-        private readonly int PAGE_SIZE = 50;
+        private readonly int PAGE_SIZE = 50; 
 
         public HomeController(ILogger<HomeController> logger, ICityStationInfo cityStationInfo)
         {
@@ -26,7 +26,7 @@ namespace MGMMVCAPP.Controllers
 
         public async Task<IActionResult> Index(int page = 1, int? cityId = null, string? districtName = null)
         {
-            // page 1'den baþlasýn
+            // page 1'den baï¿½lasï¿½n
             if (page < 1) page = 1;
 
             var query = _cityStationInfo.GetAllStations().AsQueryable();
@@ -37,10 +37,10 @@ namespace MGMMVCAPP.Controllers
             if (!string.IsNullOrWhiteSpace(districtName))
                 query = query.Where(x => x.ilce.ToLower() == districtName.ToLower());
 
-            // toplam kayýt sayýsý
+            // toplam kayï¿½t sayï¿½sï¿½
             int totalCount = query.Count();
 
-            // veri alýndý viewa gönderildi
+            // veri alï¿½ndï¿½ viewa gï¿½nderildi
             var allStations = query
                 .OrderBy(x => x.il)
                 .Skip((page - 1) * PAGE_SIZE)
