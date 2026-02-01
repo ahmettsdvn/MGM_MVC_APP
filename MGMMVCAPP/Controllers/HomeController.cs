@@ -43,7 +43,7 @@ namespace MGMMVCAPP.Controllers
             // veri al�nd� viewa g�nderildi
             var allStations = query
                 .OrderBy(x => x.il)
-                .Skip((page - 1) * PAGE_SIZE)
+                .Skip((page - 1) * PAGE_SIZE) 
                 .Take(PAGE_SIZE)
                 .ToList();
 
