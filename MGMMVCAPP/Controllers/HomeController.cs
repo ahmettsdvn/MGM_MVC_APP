@@ -16,7 +16,7 @@ namespace MGMMVCAPP.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly ICityStationInfo _cityStationInfo;
 
-        private readonly int PAGE_SIZE = 50;
+        private readonly int PAGE_SIZE = 50; 
 
         public HomeController(ILogger<HomeController> logger, ICityStationInfo cityStationInfo)
         {
