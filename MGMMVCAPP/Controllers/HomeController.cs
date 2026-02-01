@@ -43,7 +43,7 @@ namespace MGMMVCAPP.Controllers
             // veri al�nd� viewa g�nderildi
             var allStations = query
                 .OrderBy(x => x.il)
-                .Skip((page - 1) * PAGE_SIZE)
+                .Skip((page - 1) * PAGE_SIZE) 
                 .Take(PAGE_SIZE)
                 .ToList();
 
@@ -88,7 +88,7 @@ namespace MGMMVCAPP.Controllers
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        public IActionResult Error() 
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
