@@ -1,0 +1,188 @@
+﻿@using Common.DTO
+@using Common.LastStatus
+
+@model PagedResult<LastStatusInfo, CityDistrictDTO>
+
+@{
+    ViewData["Title"] = "SON DURUMLAR";
+
+    LastStatusInfo lastStatusInfo = Model.Items[0];
+    string cityName = Model.OtherParams.CityName;
+    string districtName = Model.OtherParams.DistrictName;
+}
+
+
+<div class="container">
+
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                <b>SON DURUM HAVA DURUMU</b>
+            </button>
+        </h2>
+        <div id="flush-collapseOne" class="accordion-collapse collapse p-4" data-bs-parent="#accordionFlushExample">
+            <div class="row">
+                    <form method="get" asp-action="Index" id="refreshForm" class="row g-2 align-items-end">
+                        <div class="col-6">
+                            <select id="citySelect" class="form-select" aria-label="İl seç">
+                                <option value="">İl Seçiniz...</option>
+                                @foreach (var item in Model.OtherParams.CityList)
+                                {
+                                    <option value="@item.CityId"
+                                            data-name="@item.CityName">
+                                        @item.CityName
+                                    </option>
+                                }
+                            </select>
+
+                            @* Submitte cityName gitsin *@
+                            <input type="hidden" id="cityName" name="cityName" value="@Model.OtherParams.CityName" />
+                        </div>
+
+                        <div class="col-6">
+                            <select id="districtSelect" name="districtName" class="form-select" disabled>
+                                <option value="">İlçe Seçiniz...</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12 mt-4 d-flex justify-content-end">
+                            <button type="submit" class="btn btn-success">YENİLE</button>
+                        </div>
+                    </form>
+            </div>
+
+        </div>
+    </div>
+
+    <table class="table table-bordered table-striped table-hover mt-5">
+                <tbody>
+                <tr>
+                    <th>İl</th>
+                    <td>@cityName</td>
+                </tr>
+                <tr>
+                    <th>İlçe</th>
+                    <td>@districtName</td>
+                </tr>
+                    <tr>
+                        <th>İstasyon No</th>
+                        <td>@lastStatusInfo.istNo</td>
+                    </tr>
+                    <tr>
+                        <th>Veri Zamanı</th>
+                        <td>@lastStatusInfo.veriZamani.ToLocalTime()</td>
+                    </tr>
+                    <tr>
+                        <th>Sıcaklık (°C)</th>
+                        <td>@lastStatusInfo.sicaklik</td>
+                    </tr>
+                    <tr>
+                        <th>Hissedilen Sıcaklık (°C)</th>
+                        <td>@lastStatusInfo.hissedilenSicaklik</td>
+                    </tr>
+                    <tr>
+                        <th>Nem (%)</th>
+                        <td>@lastStatusInfo.nem</td>
+                    </tr>
+                    <tr>
+                        <th>Aktüel Basınç (hPa)</th>
+                        <td>@lastStatusInfo.aktuelBasinc</td>
+                    </tr>
+                    <tr>
+                        <th>Denize İndirgenmiş Basınç (hPa)</th>
+                        <td>@lastStatusInfo.denizeIndirgenmisBasinc</td>
+                    </tr>
+                    <tr>
+                        <th>Rüzgar Hızı (km/s)</th>
+                        <td>@lastStatusInfo.ruzgarHiz</td>
+                    </tr>
+                    <tr>
+                        <th>Rüzgar Yönü (°)</th>
+                        <td>@lastStatusInfo.ruzgarYon</td>
+                    </tr>
+                    <tr>
+                        <th>Görüş (m)</th>
+                        <td>@lastStatusInfo.gorus</td>
+                    </tr>
+                    <tr>
+                        <th>Hadise Kodu</th>
+                        <td>
+                            <span class="badge bg-info">@lastStatusInfo.hadiseKodu</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+</div>
+
+
+<script>
+
+
+            async function loadDistricts(cityId, selectedDistrictName = null) {
+            const districtSelect = document.getElementById("districtSelect");
+
+            districtSelect.innerHTML = "";
+            districtSelect.disabled = true;
+
+            if (!cityId) {
+                districtSelect.innerHTML = `<option value="">Önce il seçiniz...</option>`;
+                return;
+            }
+
+            const res = await fetch(`/LastStatus/GetDistricts?cityId=${cityId}`);
+            const data = await res.json();
+
+            districtSelect.innerHTML = `<option value="">İlçe Seçiniz...</option>`;
+
+            data.forEach(x => {
+                const opt = document.createElement("option");
+                opt.value = x.districtName;
+                opt.textContent = x.districtName;
+
+                if (selectedDistrictName &&
+                    x.districtName.toLocaleUpperCase("tr-TR") === selectedDistrictName.toLocaleUpperCase("tr-TR")) {
+                    opt.selected = true;
+                }
+
+                districtSelect.appendChild(opt);
+            });
+
+            districtSelect.disabled = false;
+        }
+
+        const citySelect = document.getElementById("citySelect");
+        const cityNameHidden = document.getElementById("cityName");
+
+        citySelect.addEventListener("change", async function () {
+            const cityId = this.value;
+            const cityName = this.options[this.selectedIndex]?.getAttribute("data-name") || "";
+
+            // submitte gidecek cityName
+            cityNameHidden.value = cityName;
+
+            // ilçe listesi yenilensin (ilçe seçimi sıfırlansın)
+            await loadDistricts(cityId, null);
+        });
+
+        // Sayfa ilk açılış: default city/district seç, ilçe listesini yükle
+        document.addEventListener("DOMContentLoaded", async () => {
+            const defaultCityName = document.getElementById("defaultCityName").value;
+            const defaultDistrictName = document.getElementById("defaultDistrictName").value;
+
+            // default cityName'e denk gelen option'ı bul ve seç
+            const options = Array.from(citySelect.options);
+            const match = options.find(o =>
+                (o.getAttribute("data-name") || "").toLocaleUpperCase("tr-TR") === defaultCityName.toLocaleUpperCase("tr-TR")
+            );
+
+            if (match) {
+                citySelect.value = match.value;        
+                cityNameHidden.value = defaultCityName; 
+                await loadDistricts(match.value, defaultDistrictName); // ilçeleri çek ve default ilçeyi seç
+            } else {
+                cityNameHidden.value = defaultCityName;
+            }
+        });
+
+</script>
