@@ -1,0 +1,236 @@
+﻿@using Common.DTO
+@using Common.LastStatus
+@using Common.Weather
+
+@model PagedResult<DailyWeatherForecast, CityDistrictDTO>
+
+@{
+    ViewData["Title"] = "5 GÜNLÜK TAHMİNLER";
+
+
+    DailyWeatherForecast dailyWeatherForecast = Model.Items[0];
+    string cityName = Model.OtherParams.CityName;
+    string districtName = Model.OtherParams.DistrictName;
+}
+
+
+<div class="container">
+
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                <b>SON DURUM HAVA DURUMU</b>
+            </button>
+        </h2>
+        <div id="flush-collapseOne" class="accordion-collapse collapse p-4" data-bs-parent="#accordionFlushExample">
+            <div class="row">
+                    <form method="get" asp-action="Index" id="refreshForm" class="row g-2 align-items-end">
+                        <div class="col-6">
+                            <select id="citySelect" class="form-select" aria-label="İl seç">
+                                <option value="">İl Seçiniz...</option>
+                                @foreach (var item in Model.OtherParams.CityList)
+                                {
+                                    <option value="@item.CityId"
+                                            data-name="@item.CityName">
+                                        @item.CityName
+                                    </option>
+                                }
+                            </select>
+
+                            @* Submitte cityName gitsin *@
+                            <input type="hidden" id="cityName" name="cityName" value="@Model.OtherParams.CityName" />
+                        </div>
+
+                        <div class="col-6">
+                            <select id="districtSelect" name="districtName" class="form-select" disabled>
+                                <option value="">İlçe Seçiniz...</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12 mt-4 d-flex justify-content-end">
+                            <button type="submit" class="btn btn-success">YENİLE</button>
+                        </div>
+                    </form>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="container-fluid mt-4">
+
+        <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+                🌤️ 6 Günlük Hava Tahmini — İstasyon: @dailyWeatherForecast.istNo / @cityName - @districtName
+        </div>
+
+        <div class="table-responsive">
+
+
+                @if (dailyWeatherForecast.istNo == 0)
+                {
+                    <div class="alert alert-warning m-3">
+                        Gösterilecek hava tahmini bulunamadı.
+                    </div>
+                }
+                else
+                {
+                    <table class="table table-bordered table-striped table-hover text-center align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Bilgi</th>
+                                <th>@dailyWeatherForecast.tarihGun0.ToString("dd.MM.yyyy")</th>
+                                <th>@dailyWeatherForecast.tarihGun1.ToString("dd.MM.yyyy")</th>
+                                <th>@dailyWeatherForecast.tarihGun2.ToString("dd.MM.yyyy")</th>
+                                <th>@dailyWeatherForecast.tarihGun3.ToString("dd.MM.yyyy")</th>
+                                <th>@dailyWeatherForecast.tarihGun4.ToString("dd.MM.yyyy")</th>
+                                <th>@dailyWeatherForecast.tarihGun5.ToString("dd.MM.yyyy")</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <tr>
+                                <th>Hadise</th>
+                                <td><span class="badge bg-info">@dailyWeatherForecast.hadiseGun0</span></td>
+                                <td><span class="badge bg-info">@dailyWeatherForecast.hadiseGun1</span></td>
+                                <td><span class="badge bg-info">@dailyWeatherForecast.hadiseGun2</span></td>
+                                <td><span class="badge bg-info">@dailyWeatherForecast.hadiseGun3</span></td>
+                                <td><span class="badge bg-info">@dailyWeatherForecast.hadiseGun4</span></td>
+                                <td><span class="badge bg-info">@dailyWeatherForecast.hadiseGun5</span></td>
+                            </tr>
+
+                            <tr>
+                                <th>🌡️ En Düşük (°C)</th>
+                                <td>@dailyWeatherForecast.enDusukGun0</td>
+                                <td>@dailyWeatherForecast.enDusukGun1</td>
+                                <td>@dailyWeatherForecast.enDusukGun2</td>
+                                <td>@dailyWeatherForecast.enDusukGun3</td>
+                                <td>@dailyWeatherForecast.enDusukGun4</td>
+                                <td>@dailyWeatherForecast.enDusukGun5</td>
+                            </tr>
+
+                            <tr>
+                                <th>🔥 En Yüksek (°C)</th>
+                                <td>@dailyWeatherForecast.enYuksekGun0</td>
+                                <td>@dailyWeatherForecast.enYuksekGun1</td>
+                                <td>@dailyWeatherForecast.enYuksekGun2</td>
+                                <td>@dailyWeatherForecast.enYuksekGun3</td>
+                                <td>@dailyWeatherForecast.enYuksekGun4</td>
+                                <td>@dailyWeatherForecast.enYuksekGun5</td>
+                            </tr>
+
+                            <tr>
+                                <th>💧 En Düşük Nem (%)</th>
+                                <td>@dailyWeatherForecast.enDusukNemGun0</td>
+                                <td>@dailyWeatherForecast.enDusukNemGun1</td>
+                                <td>@dailyWeatherForecast.enDusukNemGun2</td>
+                                <td>@dailyWeatherForecast.enDusukNemGun3</td>
+                                <td>@dailyWeatherForecast.enDusukNemGun4</td>
+                                <td>@dailyWeatherForecast.enDusukNemGun5</td>
+                            </tr>
+
+                            <tr>
+                                <th>💦 En Yüksek Nem (%)</th>
+                                <td>@dailyWeatherForecast.enYuksekNemGun0</td>
+                                <td>@dailyWeatherForecast.enYuksekNemGun1</td>
+                                <td>@dailyWeatherForecast.enYuksekNemGun2</td>
+                                <td>@dailyWeatherForecast.enYuksekNemGun3</td>
+                                <td>@dailyWeatherForecast.enYuksekNemGun4</td>
+                                <td>@dailyWeatherForecast.enYuksekNemGun5</td>
+                            </tr>
+
+                            <tr>
+                                <th>🌬️ Rüzgar Hızı (km/s)</th>
+                                <td>@dailyWeatherForecast.ruzgarHizGun0</td>
+                                <td>@dailyWeatherForecast.ruzgarHizGun1</td>
+                                <td>@dailyWeatherForecast.ruzgarHizGun2</td>
+                                <td>@dailyWeatherForecast.ruzgarHizGun3</td>
+                                <td>@dailyWeatherForecast.ruzgarHizGun4</td>
+                                <td>@dailyWeatherForecast.ruzgarHizGun5</td>
+                            </tr>
+
+                            
+
+                        </tbody>
+                    </table>
+                }
+                
+                
+            
+        </div>
+    </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+
+            async function loadDistricts(cityId, selectedDistrictName = null) {
+            const districtSelect = document.getElementById("districtSelect");
+
+            districtSelect.innerHTML = "";
+            districtSelect.disabled = true;
+
+            if (!cityId) {
+                districtSelect.innerHTML = `<option value="">Önce il seçiniz...</option>`;
+                return;
+            }
+
+            const res = await fetch(`/Day5/GetDistricts?cityId=${cityId}`);
+            const data = await res.json();
+
+            districtSelect.innerHTML = `<option value="">İlçe Seçiniz...</option>`;
+
+            data.forEach(x => {
+                const opt = document.createElement("option");
+                opt.value = x.districtName;
+                opt.textContent = x.districtName;
+
+                if (selectedDistrictName &&
+                    x.districtName.toLocaleUpperCase("tr-TR") === selectedDistrictName.toLocaleUpperCase("tr-TR")) {
+                    opt.selected = true;
+                }
+
+                districtSelect.appendChild(opt);
+            });
+
+            districtSelect.disabled = false;
+        }
+
+        const citySelect = document.getElementById("citySelect");
+        const cityNameHidden = document.getElementById("cityName");
+
+        citySelect.addEventListener("change", async function () {
+            const cityId = this.value;
+            const cityName = this.options[this.selectedIndex]?.getAttribute("data-name") || "";
+
+            // submitte gidecek cityName
+            cityNameHidden.value = cityName;
+
+            // ilçe listesi yenilensin (ilçe seçimi sıfırlansın)
+            await loadDistricts(cityId, null);
+        });
+
+        // Sayfa ilk açılış: default city/district seç, ilçe listesini yükle
+        document.addEventListener("DOMContentLoaded", async () => {
+            const defaultCityName = document.getElementById("defaultCityName").value;
+            const defaultDistrictName = document.getElementById("defaultDistrictName").value;
+
+            // default cityName'e denk gelen option'ı bul ve seç
+            const options = Array.from(citySelect.options);
+            const match = options.find(o =>
+                (o.getAttribute("data-name") || "").toLocaleUpperCase("tr-TR") === defaultCityName.toLocaleUpperCase("tr-TR")
+            );
+
+            if (match) {
+                citySelect.value = match.value;        
+                cityNameHidden.value = defaultCityName; 
+                await loadDistricts(match.value, defaultDistrictName); // ilçeleri çek ve default ilçeyi seç
+            } else {
+                cityNameHidden.value = defaultCityName;
+            }
+        });
+
+</script>

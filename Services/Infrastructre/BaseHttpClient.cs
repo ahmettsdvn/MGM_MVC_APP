@@ -69,7 +69,9 @@ namespace Services.Infrastructre
                 {
                     var result = JsonConvert.DeserializeObject<List<T>>(json);
 
-                    return result[0];
+                    if (result.Count > 0) return result[0];
+
+                    else return default(T);
                 }                    
             }
             catch (Exception)
