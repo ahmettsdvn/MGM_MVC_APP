@@ -9,6 +9,8 @@ namespace Common.DTO
 {
     public class CityDistrictDTO
     {
-        public List<TurkeyCity> CityList { get; set; } 
+        public List<TurkeyCity> CityList { get; set; }
+        public string CityName { get; set; }
+        public string DistrictName { get; set; }
     }
 }

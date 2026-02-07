@@ -20,7 +20,7 @@ namespace Common.Stations
         public int ilPlaka { get; set; }
         public int merkezId { get; set; }
         public int oncelik { get; set; }
-        public int saatlikTahminIstNo { get; set; }
+        public int? saatlikTahminIstNo { get; set; }
         public int sondurumIstNo { get; set; }
         public int yukseklik { get; set; }
         public string aciklama { get; set; }
