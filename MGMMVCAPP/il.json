@@ -1,326 +1,83 @@
 [
-  {
-    "CityId": 1,
-    "CityName": "Adana"
-  },
-  {
-    "CityId": 2,
-    "CityName": "Ad�yaman"
-  },
-  {
-    "CityId": 3,
-    "CityName": "Afyonkarahisar"
-  },
-  {
-    "CityId": 4,
-    "CityName": "A�r�"
-  },
-  {
-    "CityId": 5,
-    "CityName": "Amasya"
-  },
-  {
-    "CityId": 6,
-    "CityName": "Ankara"
-  },
-  {
-    "CityId": 7,
-    "CityName": "Antalya"
-  },
-  {
-    "CityId": 8,
-    "CityName": "Artvin"
-  },
-  {
-    "CityId": 9,
-    "CityName": "Ayd�n"
-  },
-  {
-    "CityId": 10,
-    "CityName": "Bal�kesir"
-  },
-  {
-    "CityId": 11,
-    "CityName": "Bilecik"
-  },
-  {
-    "CityId": 12,
-    "CityName": "Bing�l"
-  },
-  {
-    "CityId": 13,
-    "CityName": "Bitlis"
-  },
-  {
-    "CityId": 14,
-    "CityName": "Bolu"
-  },
-  {
-    "CityId": 15,
-    "CityName": "Burdur"
-  },
-  {
-    "CityId": 16,
-    "CityName": "Bursa"
-  },
-  {
-    "CityId": 17,
-    "CityName": "�anakkale"
-  },
-  {
-    "CityId": 18,
-    "CityName": "�ank�r�"
-  },
-  {
-    "CityId": 19,
-    "CityName": "�orum"
-  },
-  {
-    "CityId": 20,
-    "CityName": "Denizli"
-  },
-  {
-    "CityId": 21,
-    "CityName": "Diyarbak�r"
-  },
-  {
-    "CityId": 22,
-    "CityName": "Edirne"
-  },
-  {
-    "CityId": 23,
-    "CityName": "Elaz��"
-  },
-  {
-    "CityId": 24,
-    "CityName": "Erzincan"
-  },
-  {
-    "CityId": 25,
-    "CityName": "Erzurum"
-  },
-  {
-    "CityId": 26,
-    "CityName": "Eski�ehir"
-  },
-  {
-    "CityId": 27,
-    "CityName": "Gaziantep"
-  },
-  {
-    "CityId": 28,
-    "CityName": "Giresun"
-  },
-  {
-    "CityId": 29,
-    "CityName": "G�m��hane"
-  },
-  {
-    "CityId": 30,
-    "CityName": "Hakkari"
-  },
-  {
-    "CityId": 31,
-    "CityName": "Hatay"
-  },
-  {
-    "CityId": 32,
-    "CityName": "Isparta"
-  },
-  {
-    "CityId": 33,
-    "CityName": "Mersin"
-  },
-  {
-    "CityId": 34,
-    "CityName": "�stanbul"
-  },
-  {
-    "CityId": 35,
-    "CityName": "�zmir"
-  },
-  {
-    "CityId": 36,
-    "CityName": "Kars"
-  },
-  {
-    "CityId": 37,
-    "CityName": "Kastamonu"
-  },
-  {
-    "CityId": 38,
-    "CityName": "Kayseri"
-  },
-  {
-    "CityId": 39,
-    "CityName": "K�rklareli"
-  },
-  {
-    "CityId": 40,
-    "CityName": "K�r�ehir"
-  },
-  {
-    "CityId": 41,
-    "CityName": "Kocaeli"
-  },
-  {
-    "CityId": 42,
-    "CityName": "Konya"
-  },
-  {
-    "CityId": 43,
-    "CityName": "K�tahya"
-  },
-  {
-    "CityId": 44,
-    "CityName": "Malatya"
-  },
-  {
-    "CityId": 45,
-    "CityName": "Manisa"
-  },
-  {
-    "CityId": 46,
-    "CityName": "Kahramanmara�"
-  },
-  {
-    "CityId": 47,
-    "CityName": "Mardin"
-  },
-  {
-    "CityId": 48,
-    "CityName": "Mu�la"
-  },
-  {
-    "CityId": 49,
-    "CityName": "Mu�"
-  },
-  {
-    "CityId": 50,
-    "CityName": "Nev�ehir"
-  },
-  {
-    "CityId": 51,
-    "CityName": "Ni�de"
-  },
-  {
-    "CityId": 52,
-    "CityName": "Ordu"
-  },
-  {
-    "CityId": 53,
-    "CityName": "Rize"
-  },
-  {
-    "CityId": 54,
-    "CityName": "Sakarya"
-  },
-  {
-    "CityId": 55,
-    "CityName": "Samsun"
-  },
-  {
-    "CityId": 56,
-    "CityName": "Siirt"
-  },
-  {
-    "CityId": 57,
-    "CityName": "Sinop"
-  },
-  {
-    "CityId": 58,
-    "CityName": "Sivas"
-  },
-  {
-    "CityId": 59,
-    "CityName": "Tekirda�"
-  },
-  {
-    "CityId": 60,
-    "CityName": "Tokat"
-  },
-  {
-    "CityId": 61,
-    "CityName": "Trabzon"
-  },
-  {
-    "CityId": 62,
-    "CityName": "Tunceli"
-  },
-  {
-    "CityId": 63,
-    "CityName": "�anl�urfa"
-  },
-  {
-    "CityId": 64,
-    "CityName": "U�ak"
-  },
-  {
-    "CityId": 65,
-    "CityName": "Van"
-  },
-  {
-    "CityId": 66,
-    "CityName": "Yozgat"
-  },
-  {
-    "CityId": 67,
-    "CityName": "Zonguldak"
-  },
-  {
-    "CityId": 68,
-    "CityName": "Aksaray"
-  },
-  {
-    "CityId": 69,
-    "CityName": "Bayburt"
-  },
-  {
-    "CityId": 70,
-    "CityName": "Karaman"
-  },
-  {
-    "CityId": 71,
-    "CityName": "K�r�kkale"
-  },
-  {
-    "CityId": 72,
-    "CityName": "Batman"
-  },
-  {
-    "CityId": 73,
-    "CityName": "��rnak"
-  },
-  {
-    "CityId": 74,
-    "CityName": "Bart�n"
-  },
-  {
-    "CityId": 75,
-    "CityName": "Ardahan"
-  },
-  {
-    "CityId": 76,
-    "CityName": "I�d�r"
-  },
-  {
-    "CityId": 77,
-    "CityName": "Yalova"
-  },
-  {
-    "CityId": 78,
-    "CityName": "Karab�k"
-  },
-  {
-    "CityId": 79,
-    "CityName": "Kilis"
-  },
-  {
-    "CityId": 80,
-    "CityName": "Osmaniye"
-  },
-  {
-    "CityId": 81,
-    "CityName": "D�zce"
-  }
+  { "CityId": 1, "CityName": "Adana" },
+  { "CityId": 2, "CityName": "Adıyaman" },
+  { "CityId": 3, "CityName": "Afyonkarahisar" },
+  { "CityId": 4, "CityName": "Ağrı" },
+  { "CityId": 5, "CityName": "Amasya" },
+  { "CityId": 6, "CityName": "Ankara" },
+  { "CityId": 7, "CityName": "Antalya" },
+  { "CityId": 8, "CityName": "Artvin" },
+  { "CityId": 9, "CityName": "Aydın" },
+  { "CityId": 10, "CityName": "Balıkesir" },
+  { "CityId": 11, "CityName": "Bilecik" },
+  { "CityId": 12, "CityName": "Bingöl" },
+  { "CityId": 13, "CityName": "Bitlis" },
+  { "CityId": 14, "CityName": "Bolu" },
+  { "CityId": 15, "CityName": "Burdur" },
+  { "CityId": 16, "CityName": "Bursa" },
+  { "CityId": 17, "CityName": "Çanakkale" },
+  { "CityId": 18, "CityName": "Çankırı" },
+  { "CityId": 19, "CityName": "Çorum" },
+  { "CityId": 20, "CityName": "Denizli" },
+  { "CityId": 21, "CityName": "Diyarbakır" },
+  { "CityId": 22, "CityName": "Edirne" },
+  { "CityId": 23, "CityName": "Elazığ" },
+  { "CityId": 24, "CityName": "Erzincan" },
+  { "CityId": 25, "CityName": "Erzurum" },
+  { "CityId": 26, "CityName": "Eskişehir" },
+  { "CityId": 27, "CityName": "Gaziantep" },
+  { "CityId": 28, "CityName": "Giresun" },
+  { "CityId": 29, "CityName": "Gümüşhane" },
+  { "CityId": 30, "CityName": "Hakkari" },
+  { "CityId": 31, "CityName": "Hatay" },
+  { "CityId": 32, "CityName": "Isparta" },
+  { "CityId": 33, "CityName": "Mersin" },
+  { "CityId": 34, "CityName": "İstanbul" },
+  { "CityId": 35, "CityName": "İzmir" },
+  { "CityId": 36, "CityName": "Kars" },
+  { "CityId": 37, "CityName": "Kastamonu" },
+  { "CityId": 38, "CityName": "Kayseri" },
+  { "CityId": 39, "CityName": "Kırklareli" },
+  { "CityId": 40, "CityName": "Kırşehir" },
+  { "CityId": 41, "CityName": "Kocaeli" },
+  { "CityId": 42, "CityName": "Konya" },
+  { "CityId": 43, "CityName": "Kütahya" },
+  { "CityId": 44, "CityName": "Malatya" },
+  { "CityId": 45, "CityName": "Manisa" },
+  { "CityId": 46, "CityName": "Kahramanmaraş" },
+  { "CityId": 47, "CityName": "Mardin" },
+  { "CityId": 48, "CityName": "Muğla" },
+  { "CityId": 49, "CityName": "Muş" },
+  { "CityId": 50, "CityName": "Nevşehir" },
+  { "CityId": 51, "CityName": "Niğde" },
+  { "CityId": 52, "CityName": "Ordu" },
+  { "CityId": 53, "CityName": "Rize" },
+  { "CityId": 54, "CityName": "Sakarya" },
+  { "CityId": 55, "CityName": "Samsun" },
+  { "CityId": 56, "CityName": "Siirt" },
+  { "CityId": 57, "CityName": "Sinop" },
+  { "CityId": 58, "CityName": "Sivas" },
+  { "CityId": 59, "CityName": "Tekirdağ" },
+  { "CityId": 60, "CityName": "Tokat" },
+  { "CityId": 61, "CityName": "Trabzon" },
+  { "CityId": 62, "CityName": "Tunceli" },
+  { "CityId": 63, "CityName": "Şanlıurfa" },
+  { "CityId": 64, "CityName": "Uşak" },
+  { "CityId": 65, "CityName": "Van" },
+  { "CityId": 66, "CityName": "Yozgat" },
+  { "CityId": 67, "CityName": "Zonguldak" },
+  { "CityId": 68, "CityName": "Aksaray" },
+  { "CityId": 69, "CityName": "Bayburt" },
+  { "CityId": 70, "CityName": "Karaman" },
+  { "CityId": 71, "CityName": "Kırıkkale" },
+  { "CityId": 72, "CityName": "Batman" },
+  { "CityId": 73, "CityName": "Şırnak" },
+  { "CityId": 74, "CityName": "Bartın" },
+  { "CityId": 75, "CityName": "Ardahan" },
+  { "CityId": 76, "CityName": "Iğdır" },
+  { "CityId": 77, "CityName": "Yalova" },
+  { "CityId": 78, "CityName": "Karabük" },
+  { "CityId": 79, "CityName": "Kilis" },
+  { "CityId": 80, "CityName": "Osmaniye" },
+  { "CityId": 81, "CityName": "Düzce" }
 ]

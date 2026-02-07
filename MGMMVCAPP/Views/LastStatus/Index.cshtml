@@ -1,7 +1,7 @@
 ﻿@using Common.DTO
 @using Common.LastStatus
 
-@Model PagedResult<LastStatusInfo, CityDistrictDTO>
+@model PagedResult<LastStatusInfo, CityDistrictDTO>
 
 @{
     ViewData["Title"] = "SON DURUMLAR";
@@ -22,29 +22,33 @@
         </h2>
         <div id="flush-collapseOne" class="accordion-collapse collapse p-4" data-bs-parent="#accordionFlushExample">
             <div class="row">
-                <form method="get" asp-action="Index" class="row g-2 align-items-end" id="filterForm">
+                    <form method="get" asp-action="Index" id="refreshForm" class="row g-2 align-items-end">
+                        <div class="col-6">
+                            <select id="citySelect" class="form-select" aria-label="İl seç">
+                                <option value="">İl Seçiniz...</option>
+                                @foreach (var item in Model.OtherParams.CityList)
+                                {
+                                    <option value="@item.CityId"
+                                            data-name="@item.CityName">
+                                        @item.CityName
+                                    </option>
+                                }
+                            </select>
 
-                    <div class="col-6">
-                        <select id="citySelect" name="cityId" class="form-select">
-                            <option value="">İl Seçiniz...</option>
-                            @foreach (var item in Model.OtherParams.CityList)
-                            {
-                                <option value="@item.CityId">@item.CityName</option>
-                            }
-                        </select>
-                    </div>
+                            @* Submitte cityName gitsin *@
+                            <input type="hidden" id="cityName" name="cityName" value="@Model.OtherParams.CityName" />
+                        </div>
 
-                    <div class="col-6">
-                        <select id="districtSelect" name="districtName" class="form-select" disabled>
-                            <option value="">İlçe Seçiniz...</option>
-                        </select>
-                    </div>
+                        <div class="col-6">
+                            <select id="districtSelect" name="districtName" class="form-select" disabled>
+                                <option value="">İlçe Seçiniz...</option>
+                            </select>
+                        </div>
 
-                    <div class="col-12 mt-4 d-flex justify-content-end">
-                        <button type="submit" class="btn btn-success">SON DURUMLARI GETİR</button>
-                    </div>
-
-                </form>
+                        <div class="col-12 mt-4 d-flex justify-content-end">
+                            <button type="submit" class="btn btn-success">YENİLE</button>
+                        </div>
+                    </form>
             </div>
 
         </div>
@@ -115,50 +119,69 @@
 <script>
 
 
-    async function loadDistricts(cityId) {
-        const districtSelect = document.getElementById("districtSelect");
+            async function loadDistricts(cityId, selectedDistrictName = null) {
+            const districtSelect = document.getElementById("districtSelect");
 
-        districtSelect.innerHTML = "";
-        districtSelect.disabled = true;
+            districtSelect.innerHTML = "";
+            districtSelect.disabled = true;
 
-        if (!cityId) {
-            districtSelect.innerHTML = `<option value="">Önce il seçiniz...</option>`;
-            return;
-        }
-
-        const res = await fetch(`/LastStatus/GetDistricts?cityId=${cityId}`);
-        const data = await res.json();
-
-        districtSelect.innerHTML = `<option value="">İlçe Seçiniz...</option>`;
-
-        data.forEach(x => {
-            const opt = document.createElement("option");
-            opt.value = x.districtName;
-            opt.textContent = x.districtName;
-            districtSelect.appendChild(opt);
-        });
-
-        districtSelect.disabled = false;
-    }
-
-    document.getElementById("citySelect").addEventListener("change", function () {
-        loadDistricts(this.value);
-    });
-
-        document.getElementById("filterForm").addEventListener("submit", function (e) {
-            const city = document.getElementById("citySelect").value;
-            const district = document.getElementById("districtSelect").value;
-
-            if (!city) {
-                e.preventDefault();
-                alert("Lütfen önce bir il seçiniz.");
+            if (!cityId) {
+                districtSelect.innerHTML = `<option value="">Önce il seçiniz...</option>`;
                 return;
             }
 
-            if (!district) {
-                e.preventDefault();
-                alert("Lütfen bir ilçe seçiniz.");
-                return;
+            const res = await fetch(`/LastStatus/GetDistricts?cityId=${cityId}`);
+            const data = await res.json();
+
+            districtSelect.innerHTML = `<option value="">İlçe Seçiniz...</option>`;
+
+            data.forEach(x => {
+                const opt = document.createElement("option");
+                opt.value = x.districtName;
+                opt.textContent = x.districtName;
+
+                if (selectedDistrictName &&
+                    x.districtName.toLocaleUpperCase("tr-TR") === selectedDistrictName.toLocaleUpperCase("tr-TR")) {
+                    opt.selected = true;
+                }
+
+                districtSelect.appendChild(opt);
+            });
+
+            districtSelect.disabled = false;
+        }
+
+        const citySelect = document.getElementById("citySelect");
+        const cityNameHidden = document.getElementById("cityName");
+
+        citySelect.addEventListener("change", async function () {
+            const cityId = this.value;
+            const cityName = this.options[this.selectedIndex]?.getAttribute("data-name") || "";
+
+            // submitte gidecek cityName
+            cityNameHidden.value = cityName;
+
+            // ilçe listesi yenilensin (ilçe seçimi sıfırlansın)
+            await loadDistricts(cityId, null);
+        });
+
+        // Sayfa ilk açılış: default city/district seç, ilçe listesini yükle
+        document.addEventListener("DOMContentLoaded", async () => {
+            const defaultCityName = document.getElementById("defaultCityName").value;
+            const defaultDistrictName = document.getElementById("defaultDistrictName").value;
+
+            // default cityName'e denk gelen option'ı bul ve seç
+            const options = Array.from(citySelect.options);
+            const match = options.find(o =>
+                (o.getAttribute("data-name") || "").toLocaleUpperCase("tr-TR") === defaultCityName.toLocaleUpperCase("tr-TR")
+            );
+
+            if (match) {
+                citySelect.value = match.value;        
+                cityNameHidden.value = defaultCityName; 
+                await loadDistricts(match.value, defaultDistrictName); // ilçeleri çek ve default ilçeyi seç
+            } else {
+                cityNameHidden.value = defaultCityName;
             }
         });
 
