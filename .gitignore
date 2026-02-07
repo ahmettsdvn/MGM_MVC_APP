@@ -361,3 +361,25 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# =========================
+# GitHub Actions / Workflows
+# =========================
+.github/workflows/*
+!.github/workflows/README.md
+
+# =========================
+# Environment / Secrets
+# =========================
+.env
+.env.*
+*.secret
+*.secrets.json
+appsettings.*.json
+
+# =========================
+# SonarQube
+# =========================
+.sonar/
+.sonarqube/
+sonar-project.properties
